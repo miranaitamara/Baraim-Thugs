@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Button, Card, Container, Row, Col, ListGroup, Navbar, Nav, Form, FormControl } from 'react-bootstrap';
+import { Button, Card, Container, Row, Col, ListGroup, Navbar, Nav, Form, FormControl, Carousel } from 'react-bootstrap';
 import moment from "moment"
 
 class App extends React.Component {
@@ -15,10 +15,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.getMoviesData();
+    this.getLatestMoviesData();
   }
 
-  getMoviesData = async () => {
+  getLatestMoviesData = async () => {
     const { pageNo } = this.state
     const url = `https://api.themoviedb.org/3/discover/movie?api_key=58049738a0f581e94fda3c41ab528a79&page=${pageNo}`
 
@@ -30,6 +30,22 @@ class App extends React.Component {
         movies: this.state.movies.concat(response.results),
         allMovie: response.results,
         pageNo: pageNo + 1,
+      })
+
+    } catch (error) {
+      alert(error);
+    }
+  }
+
+  getNowPlayingData = async () => {
+    const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=58049738a0f581e94fda3c41ab528a79&page=1`
+    try {
+      let data = await fetch(url);
+      let response = await data.json();
+      console.log(response.results)
+      this.setState({
+        movies: response.results,
+        allMovie: response.results,
       })
 
     } catch (error) {
@@ -142,29 +158,30 @@ class App extends React.Component {
 
   renderNavBar() {
     return (
-      <div>
-        <Navbar style={{ backgroundColor: "#000022" }} >
-          <Navbar.Brand href="#">
-            <img
-              alt="logo"
-              src=""
-              width="150"
-              height="50"
-              className="d-inline-block align-top"
-            />
-          </Navbar.Brand>
+      <Navbar collapseOnSelect expand="lg" fixed="top" style={{ backgroundColor: "#000022" }} >
+        <Navbar.Brand href="#">
+          <img
+            alt="logo"
+            src="http://www.energycctv.com/uploads/4/7/0/1/47015565/1080p-fullhd-logo_3_orig.png"
+            width="90"
+            height="50"
+            className="d-inline-block align-top"
+          />
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" className="nav-toggle" />
+        <Navbar.Collapse id="responsive-navbar-nav" style={{ textAlign: "center" }}>
           <Nav className="mr-auto">
-            <Nav.Link className="text-white" onClick={this.getMoviesData}>Latest Movies</Nav.Link>
+            <Nav.Link className="text-white" onClick={this.getNowPlayingData}>Now Playing</Nav.Link>
             <Nav.Link className="text-white" onClick={this.sortByRating}>Highest Rating</Nav.Link>
             <Nav.Link className="text-white" onClick={this.sortByVotes}>Highest Votes</Nav.Link>
             <Nav.Link className="text-white" onClick={this.sortByAZ}>Movies A-Z</Nav.Link>
           </Nav>
-          <Form inline onSubmit={this.handleSubmit} >
+          <Form inline onSubmit={this.handleSubmit} className="d-flex justify-content-center">
             <FormControl id="searchInput" type="text" placeholder="Search" value={this.state.value} onChange={this.handleChange} className="mr-sm-2" />
             <Button variant="outline-info" onClick={this.handleSubmit} style={{ marginRight: "1rem" }}>Search</Button>
           </Form>
-        </Navbar>
-      </div>
+        </Navbar.Collapse>
+      </Navbar>
     )
   }
 
@@ -172,13 +189,24 @@ class App extends React.Component {
     return (
       <div>
         {this.renderNavBar()}
-        <Container>
+        <Container style={{ marginTop: 90 }}>
+          <Row>
+            <Col xs={12} className="mt-4 mb-2">
+              <h1 className="text-center">Now Featuring</h1>
+            </Col>
+          </Row>
+          <ControlledCarousel />
+          <Row>
+            <Col xs={12} className="mt-4 mb-2">
+              <h1 className="movie-selection"><span>Movie Selection</span></h1>
+            </Col>
+          </Row>
           <Row>
             {this.renderMovies()}
           </Row>
           <Row>
             <Col className="d-flex justify-content-center">
-              <Button block style={{ backgroundColor: "#005E7C" }} onChange={this.getMoviesData}>View More</Button>
+              <Button block style={{ backgroundColor: "#005E7C" }} onClick={this.getLatestMoviesData}>View More</Button>
             </Col>
           </Row>
         </Container>
@@ -186,5 +214,52 @@ class App extends React.Component {
     );
   }
 }
+
+class ControlledCarousel extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+
+    this.handleSelect = this.handleSelect.bind(this);
+
+    this.state = {
+      index: 0,
+      direction: null,
+    };
+  }
+
+  handleSelect(selectedIndex, e) {
+    this.setState({
+      index: selectedIndex,
+      direction: e.direction,
+    });
+  }
+
+  render() {
+    const { index, direction } = this.state;
+
+    return (
+      <Row>
+        <Col xs={12}>
+          <Carousel
+            activeIndex={index}
+            direction={direction}
+            onSelect={this.handleSelect}
+          >
+            <Carousel.Item>
+              <iframe width="100%" height="550" src="https://www.youtube.com/embed/TcMBFSGVi1c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </Carousel.Item>
+            <Carousel.Item>
+              <iframe width="100%" height="550" src="https://www.youtube.com/embed/JcMtWwiyzpU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </Carousel.Item>
+            <Carousel.Item>
+              <iframe width="100%" height="550" src="https://www.youtube.com/embed/Z1BCujX3pw8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </Carousel.Item>
+          </Carousel>
+        </Col>
+      </Row>
+    );
+  }
+}
+
 
 export default App

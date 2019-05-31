@@ -23,12 +23,31 @@
   color: #61dafb;
 }
 
-.over-flow { 
-  overflow-y: scroll; 
-} 
-.over-flow::-webkit-scrollbar { 
-  display: none; 
-} 
+.over-flow {
+  overflow-y: scroll;
+}
+.over-flow::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-toggle {
+  background-color: #005e7c;
+  outline: none;
+}
+
+.movie-selection {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #000;
+  box-shadow: 0 0 5px 5px #000;
+  line-height: 0.1em;
+  margin: 10px 0 20px;
+}
+
+.movie-selection span {
+  background: #fff;
+  padding: 0 10px;
+}
 
 @keyframes App-logo-spin {
   from {
