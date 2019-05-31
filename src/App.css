@@ -31,8 +31,8 @@
 }
 
 .nav-toggle {
-  background-color: #005e7c;
-  outline: none;
+  background-color: darkgoldenrod;
+  outline: none !important;
 }
 
 .movie-selection {

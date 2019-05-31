@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
 import { Button, Card, Container, Row, Col, ListGroup, Navbar, Nav, Form, FormControl, Carousel } from 'react-bootstrap';
-import moment from "moment"
+import moment from "moment";
+import { RingLoader } from 'react-spinners';
 
 class App extends React.Component {
 
@@ -11,6 +12,7 @@ class App extends React.Component {
       movies: [],
       pageNo: 1,
       value: '',
+      isLoading: true,
     }
   }
 
@@ -30,6 +32,7 @@ class App extends React.Component {
         movies: this.state.movies.concat(response.results),
         allMovie: response.results,
         pageNo: pageNo + 1,
+        isLoading: false,
       })
 
     } catch (error) {
@@ -68,8 +71,6 @@ class App extends React.Component {
     })
     event.preventDefault()
   }
-
-
 
   sortByAZ = () => {
 
@@ -125,6 +126,14 @@ class App extends React.Component {
     })
   }
 
+  getSearchByYear = () => {
+    const results = this.state.movies.filter(movie => {
+      if (parseInt(movie.release_date) >= this.state.year.min && parseInt(movie.release_date) <= this.state.year.max + 1)
+        return movie
+    })
+    this.setState({ movies: results })
+  }
+
   modifyImgUrl(path) {
     if (path === null) return "https://files.slack.com/files-pri/TG5NN1V8U-FK42LPB5E/noposter.jpg";
     return `https://image.tmdb.org/t/p/w500/${path}`;
@@ -134,11 +143,11 @@ class App extends React.Component {
     return (
       this.state.movies.map(({ title, overview, vote_average, backdrop_path, release_date, vote_count }) => {
         return (
-          <Col md={4} className="d-flex justify-content-space-between">
+          <Col xs={12} md={6} lg={4}>
             <Card style={{ marginBottom: 10 }}>
               <Card.Img variant="top" src={this.modifyImgUrl(backdrop_path)} />
               <Card.Body>
-                <Card.Title style={{ textAlign: "center", fontSize: 24, height: '3rem' }}>{title}</Card.Title>
+                <Card.Title className="over-flow" style={{ textAlign: "center", fontSize: 24, height: '3.5rem' }}>{title}</Card.Title>
                 <Card.Text style={{ textAlign: "center" }}>
                   <ListGroup variant="flush" style={{ color: "#040F16" }}>
                     <ListGroup.Item className="over-flow" style={{ height: '15rem' }}>{overview}</ListGroup.Item>
@@ -186,6 +195,13 @@ class App extends React.Component {
   }
 
   render() {
+    if (this.state.isLoading) {
+      return (
+        <div  className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+          <RingLoader color={"#123abc"}/>
+        </div>)
+    }
+
     return (
       <div>
         {this.renderNavBar()}
@@ -201,7 +217,7 @@ class App extends React.Component {
               <h1 className="movie-selection"><span>Movie Selection</span></h1>
             </Col>
           </Row>
-          <Row>
+          <Row className="d-flex justify-content-center">
             {this.renderMovies()}
           </Row>
           <Row>
