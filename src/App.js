@@ -1,11 +1,24 @@
 import React from 'react';
 import './App.css';
-import { Button, Card, Container, Row, Col, ListGroup, Navbar, Nav, Fade, Form, FormControl, Carousel } from 'react-bootstrap';
+import {
+  Button,
+  Card,
+  Container,
+  Row,
+  Col,
+  ListGroup,
+  Navbar,
+  Nav,
+  Fade,
+  Form,
+  FormControl,
+  Carousel,
+}
+  from 'react-bootstrap';
 import moment from "moment";
 import { RingLoader } from 'react-spinners';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
-
 
 class App extends React.Component {
 
@@ -17,12 +30,12 @@ class App extends React.Component {
       searchText: '',
       isLoading: true,
       year: { min: 1990, max: 2019 },
-      isOpen: false,
+      sliderShown: false,
     }
   }
 
   componentDidMount() {
-    this.getLatestMoviesData();
+    this.getLatestMoviesData(1);
   }
 
   getLatestMoviesData = async () => {
@@ -35,7 +48,7 @@ class App extends React.Component {
 
       this.setState({
         movies: this.state.movies.concat(response.results),
-        allMovie: response.results,
+        allMovies: response.results,
         pageNo: pageNo + 1,
         isLoading: false,
       })
@@ -53,7 +66,7 @@ class App extends React.Component {
       console.log(response.results)
       this.setState({
         movies: response.results,
-        allMovie: response.results,
+        allMovies: response.results,
       })
 
     } catch (error) {
@@ -68,7 +81,7 @@ class App extends React.Component {
   }
 
   handleSubmit = (event) => {
-    const filterMovies = this.state.allMovie.filter(movie =>
+    const filterMovies = this.state.allMovies.filter(movie =>
       movie.title.concat(movie.overview).toLowerCase().includes(this.state.searchText.toLowerCase()));
 
     this.setState({
@@ -88,7 +101,7 @@ class App extends React.Component {
       return 0;
     }
 
-    const sortedMovies = this.state.movies.sort(compare);
+    const sortedMovies = this.state.allMovies.sort(compare);
 
     this.setState({
       movies: sortedMovies,
@@ -106,7 +119,7 @@ class App extends React.Component {
       return 0;
     }
 
-    const sortedMovies = this.state.movies.sort(compare);
+    const sortedMovies = this.state.allMovies.sort(compare);
 
     this.setState({
       movies: sortedMovies,
@@ -124,7 +137,7 @@ class App extends React.Component {
       return 0;
     }
 
-    const sortedMovies = this.state.movies.sort(compare);
+    const sortedMovies = this.state.allMovies.sort(compare);
 
     this.setState({
       movies: sortedMovies,
@@ -132,7 +145,7 @@ class App extends React.Component {
   }
 
   getSearchByYear = () => {
-    const results = this.state.allMovie.filter(movie => {
+    const results = this.state.allMovies.filter(movie => {
       if (parseInt(movie.release_date) >= this.state.year.min && parseInt(movie.release_date) <= this.state.year.max + 1)
         return movie
     })
@@ -171,13 +184,13 @@ class App extends React.Component {
   }
 
   renderNavFilterYear() {
-    const { open } = this.state
+    const { sliderShown } = this.state
     return (
       <>
         <Nav.Link className="text-white"
-          onClick={() => this.setState({ open: !open })}
+          onClick={() => this.setState({ sliderShown: !sliderShown })}
           aria-controls="year-fade"
-          aria-expanded={open}
+          aria-expanded={sliderShown}
         >
           Filter By Years
         </Nav.Link>
@@ -187,7 +200,7 @@ class App extends React.Component {
 
   renderFilterYearFade() {
     return (
-      <Fade in={this.state.open} className="w-25 mx-auto ml-lg-2 mt-lg-0 mt-2">
+      <Fade in={this.state.sliderShown} className="w-25 mx-auto ml-lg-2 mt-lg-0 mt-2">
         <div id="year-fade">
           <InputRange
             maxValue={2019}
@@ -259,6 +272,8 @@ class App extends React.Component {
           </Row>
           <Row>
             <Col className="d-flex justify-content-center">
+
+
               <Button block className="btn btn-more mb-5" onClick={this.getLatestMoviesData}>View More</Button>
             </Col>
           </Row>
