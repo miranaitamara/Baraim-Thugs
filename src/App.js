@@ -1,8 +1,11 @@
 import React from 'react';
 import './App.css';
-import { Button, Card, Container, Row, Col, ListGroup, Navbar, Nav, Form, FormControl, Carousel } from 'react-bootstrap';
+import { Button, Card, Container, Row, Col, ListGroup, Navbar, Nav, Fade, Form, FormControl, Carousel } from 'react-bootstrap';
 import moment from "moment";
 import { RingLoader } from 'react-spinners';
+import InputRange from 'react-input-range';
+import 'react-input-range/lib/css/index.css';
+
 
 class App extends React.Component {
 
@@ -11,8 +14,10 @@ class App extends React.Component {
     this.state = {
       movies: [],
       pageNo: 1,
-      value: '',
+      searchText: '',
       isLoading: true,
+      year: { min: 1990, max: 2019 },
+      isOpen: false,
     }
   }
 
@@ -58,13 +63,13 @@ class App extends React.Component {
 
   handleChange = (event) => {
     this.setState({
-      value: event.target.value,
+      searchText: event.target.value,
     })
   }
 
   handleSubmit = (event) => {
     const filterMovies = this.state.allMovie.filter(movie =>
-      movie.title.concat(movie.overview).toLowerCase().includes(this.state.value.toLowerCase()));
+      movie.title.concat(movie.overview).toLowerCase().includes(this.state.searchText.toLowerCase()));
 
     this.setState({
       movies: filterMovies,
@@ -127,7 +132,7 @@ class App extends React.Component {
   }
 
   getSearchByYear = () => {
-    const results = this.state.movies.filter(movie => {
+    const results = this.state.allMovie.filter(movie => {
       if (parseInt(movie.release_date) >= this.state.year.min && parseInt(movie.release_date) <= this.state.year.max + 1)
         return movie
     })
@@ -165,6 +170,35 @@ class App extends React.Component {
     )
   }
 
+  renderNavFilterYear() {
+    const { open } = this.state
+    return (
+      <>
+        <Nav.Link className="text-white"
+          onClick={() => this.setState({ open: !open })}
+          aria-controls="year-fade"
+          aria-expanded={open}
+        >
+          Filter By Years
+        </Nav.Link>
+      </>
+    )
+  }
+
+  renderFilterYearFade() {
+    return (
+      <Fade in={this.state.open} className="w-25 mx-auto ml-lg-2 mt-lg-0 mt-2">
+        <div id="year-fade">
+          <InputRange
+            maxValue={2019}
+            minValue={1990}
+            value={this.state.year}
+            onChange={year => this.setState({ year }, this.getSearchByYear)} />
+        </div>
+      </Fade>
+    )
+  }
+
   renderNavBar() {
     return (
       <Navbar collapseOnSelect expand="lg" fixed="top" style={{ backgroundColor: "#000022" }} >
@@ -179,15 +213,17 @@ class App extends React.Component {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" className="nav-toggle" />
         <Navbar.Collapse id="responsive-navbar-nav" style={{ textAlign: "center" }}>
-          <Nav className="mr-auto">
+          <Nav>
             <Nav.Link className="text-white" onClick={this.getNowPlayingData}>Now Playing</Nav.Link>
             <Nav.Link className="text-white" onClick={this.sortByRating}>Highest Rating</Nav.Link>
             <Nav.Link className="text-white" onClick={this.sortByVotes}>Highest Votes</Nav.Link>
             <Nav.Link className="text-white" onClick={this.sortByAZ}>Movies A-Z</Nav.Link>
+            {this.renderNavFilterYear()}
           </Nav>
-          <Form inline onSubmit={this.handleSubmit} className="d-flex justify-content-center">
-            <FormControl id="searchInput" type="text" placeholder="Search" value={this.state.value} onChange={this.handleChange} className="mr-sm-2" />
-            <Button variant="outline-info" onClick={this.handleSubmit} style={{ marginRight: "1rem" }}>Search</Button>
+          {this.renderFilterYearFade()}
+          <Form inline onSubmit={this.handleSubmit} className="d-flex justify-content-center ml-auto mt-4 mt-lg-0">
+            <FormControl id="searchInput" type="text" placeholder="Your Movie" value={this.state.searchText} onChange={this.handleChange} className="mr-sm-2" />
+            <Button className="btn btn-custom mt-sm-0 mt-2" onClick={this.handleSubmit} style={{ marginRight: "1rem" }}>Search</Button>
           </Form>
         </Navbar.Collapse>
       </Navbar>
@@ -195,10 +231,11 @@ class App extends React.Component {
   }
 
   render() {
+
     if (this.state.isLoading) {
       return (
-        <div  className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-          <RingLoader color={"#123abc"}/>
+        <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+          <RingLoader color={"#36D7B7"} />
         </div>)
     }
 
@@ -222,7 +259,7 @@ class App extends React.Component {
           </Row>
           <Row>
             <Col className="d-flex justify-content-center">
-              <Button block style={{ backgroundColor: "#005E7C" }} onClick={this.getLatestMoviesData}>View More</Button>
+              <Button block className="btn btn-more mb-5" onClick={this.getLatestMoviesData}>View More</Button>
             </Col>
           </Row>
         </Container>
@@ -276,6 +313,5 @@ class ControlledCarousel extends React.Component {
     );
   }
 }
-
 
 export default App

@@ -31,7 +31,7 @@
 }
 
 .nav-toggle {
-  background-color: darkgoldenrod;
+  background-color: #F2A900;
   outline: none !important;
 }
 
@@ -47,6 +47,36 @@
 .movie-selection span {
   background: #fff;
   padding: 0 10px;
+}
+
+.input-range__track--active,
+.input-range__slider {
+  background: #F2A900 !important;
+  border: 1px solid #F2A900 !important;
+}
+
+.input-range__label {
+  color: white !important;
+}
+
+.btn-custom {
+  background: #F2A900;
+  border: none;
+  outline: none !important;
+}
+
+.btn-custom:hover {
+  background: #0094C6;
+}
+
+.btn-more {
+  background: #0094C6;
+  border: none;
+  outline: none !important;
+}
+
+.btn-more:hover {
+  background: #F2A900;
 }
 
 @keyframes App-logo-spin {
