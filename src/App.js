@@ -17,8 +17,11 @@ import {
   from 'react-bootstrap';
 import moment from 'moment';
 import { RingLoader } from 'react-spinners';
-import InputRange from 'react-input-range';
-import PaginationComponent from 'react-reactstrap-pagination';
+import InputRange from 'react-input-range'
+;
+import Modal from 'react-modal';
+import YouTube from '@u-wave/react-youtube';
+
 import 'react-input-range/lib/css/index.css';
 
 class App extends React.Component {
@@ -32,6 +35,8 @@ class App extends React.Component {
       isLoading: true,
       year: { min: 1990, max: 2019 },
       sliderShown: false,
+      isOpen: false,
+      selectedMovieId: null
     }
   }
 
@@ -60,6 +65,7 @@ class App extends React.Component {
   }
 
   getNowPlayingData = async () => {
+    console.log(url)
     const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=58049738a0f581e94fda3c41ab528a79&page=1`
     try {
       let data = await fetch(url);
@@ -74,6 +80,7 @@ class App extends React.Component {
       alert(error);
     }
   }
+
 
   handleChange = (event) => {
     this.setState({
@@ -160,7 +167,7 @@ class App extends React.Component {
 
   renderMovies() {
     return (
-      this.state.movies.map(({ title, overview, vote_average, backdrop_path, release_date, vote_count }) => {
+      this.state.movies.map(({ title, overview, vote_average, backdrop_path, release_date, vote_count, id }) => {
         return (
           <Col xs={12} md={6} lg={4}>
             <Card style={{ marginBottom: 10 }}>
@@ -172,7 +179,7 @@ class App extends React.Component {
                     <ListGroup.Item className="over-flow" style={{ height: '15rem' }}>{overview}</ListGroup.Item>
                     <ListGroup.Item><b>Release Date:</b> {moment(release_date).format("MMM Do YY")}</ListGroup.Item>
                     <ListGroup.Item><b>Vote Count:</b> {vote_count}</ListGroup.Item>
-                    <ListGroup.Item className="text-center"><label className="btn text-white" style={{ backgroundColor: "#0094C6" }}>Rating: {vote_average}</label>
+                    <ListGroup.Item onClick={() => this.getTrailer(id)} className="text-center"><label className="btn text-white" style={{ backgroundColor: "#0094C6" }}>Watch Trailer</label>
                     </ListGroup.Item>
                   </ListGroup>
                 </Card.Text>
@@ -183,6 +190,16 @@ class App extends React.Component {
       })
     )
   }
+
+  getTrailer = async (movieId) => {
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=58049738a0f581e94fda3c41ab528a79`)
+    const jsonData = await response.json()
+    this.setState({
+      isOpen: true,
+      selectedMovieId: jsonData.results[0].key,
+    })
+  }
+  
 
   renderNavFilterYear() {
     const { sliderShown } = this.state
@@ -244,9 +261,9 @@ class App extends React.Component {
     )
   }
 
-  handlePagination(pageNo) {
-    this.setState({ pageNo: pageNo });
-  }
+  // handlePagination(pageNo) {
+  //   this.setState({ pageNo: pageNo });
+  // }
 
   render() {
 
@@ -280,14 +297,27 @@ class App extends React.Component {
 
 
               <Button block className="btn btn-more mb-5" onClick={this.getLatestMoviesData}>View More</Button>
+              <Modal
+                  isOpen={this.state.isOpen}
+                  onRequestClose={() => this.setState({isOpen: false})}
+                  contentLabel="Example Modal"
+                  >
+                  <YouTube
+                    video={this.state.selectedMovieId}
+                    autoplay
+                    height="100%"
+                    width="100%"
+
+                  />
+              </Modal>
             </Col>
           </Row>
-
+{/* 
           <PaginationComponent
           totalItems={50}
           pageSize={3}
           onSelect={this.handlePagination}
-        />
+        /> */}
 
         </Container>
       </div>
