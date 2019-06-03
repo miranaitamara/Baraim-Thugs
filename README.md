@@ -8,7 +8,7 @@ One or two sentence summary of your project.
 
 Here's a walkthrough of implemented user stories.
 
-![Gif Walkthrough]("")
+![Gif Walkthrough]("https://media.giphy.com/media/5PhRFCenPHKf9wXqxW/giphy.gif")
 
 ## User Stories
 
