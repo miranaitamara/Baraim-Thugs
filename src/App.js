@@ -15,9 +15,10 @@ import {
   Carousel,
 }
   from 'react-bootstrap';
-import moment from "moment";
+import moment from 'moment';
 import { RingLoader } from 'react-spinners';
 import InputRange from 'react-input-range';
+import PaginationComponent from 'react-reactstrap-pagination';
 import 'react-input-range/lib/css/index.css';
 
 class App extends React.Component {
@@ -39,8 +40,8 @@ class App extends React.Component {
   }
 
   getLatestMoviesData = async () => {
-    const { pageNo } = this.state
-    const url = `https://api.themoviedb.org/3/discover/movie?api_key=58049738a0f581e94fda3c41ab528a79&page=${pageNo}`
+    // const { pageNo } = this.state
+    const url = `https://api.themoviedb.org/3/discover/movie?api_key=58049738a0f581e94fda3c41ab528a79&page=${this.state.pageNo}`
 
     try {
       let data = await fetch(url);
@@ -49,7 +50,7 @@ class App extends React.Component {
       this.setState({
         movies: this.state.movies.concat(response.results),
         allMovies: response.results,
-        pageNo: pageNo + 1,
+        // pageNo: pageNo + 1,
         isLoading: false,
       })
 
@@ -63,7 +64,7 @@ class App extends React.Component {
     try {
       let data = await fetch(url);
       let response = await data.json();
-      console.log(response.results)
+
       this.setState({
         movies: response.results,
         allMovies: response.results,
@@ -147,7 +148,7 @@ class App extends React.Component {
   getSearchByYear = () => {
     const results = this.state.allMovies.filter(movie => {
       if (parseInt(movie.release_date) >= this.state.year.min && parseInt(movie.release_date) <= this.state.year.max + 1)
-        return movie
+        return movie;
     })
     this.setState({ movies: results })
   }
@@ -243,6 +244,10 @@ class App extends React.Component {
     )
   }
 
+  handlePagination(pageNo) {
+    this.setState({ pageNo: pageNo });
+  }
+
   render() {
 
     if (this.state.isLoading) {
@@ -277,6 +282,13 @@ class App extends React.Component {
               <Button block className="btn btn-more mb-5" onClick={this.getLatestMoviesData}>View More</Button>
             </Col>
           </Row>
+
+          <PaginationComponent
+          totalItems={50}
+          pageSize={3}
+          onSelect={this.handlePagination}
+        />
+
         </Container>
       </div>
     );
