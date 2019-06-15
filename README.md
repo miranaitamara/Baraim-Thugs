@@ -1,8 +1,8 @@
 # CoderSchool FTW - * Movies App *
 
-Created with love by: <Huynh Te Hoa>
+Created with love by: Huynh Te Hoa
   
-One or two sentence summary of your project. 
+A almost 100% responsive movies-app-web (except for smart watch). Users are able to search locally within given API (more than 400.000 results). Movies can also be filtered in different ways (by searching, by rating, by years, alphabetically, etc.). Moreover, infinite scrolling is also implemented for best user experience.
 
 ## Gif Walkthrough
 
