@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from './logo.png'
 import './App.css';
 import {
   Button,
@@ -9,6 +10,7 @@ import {
   ListGroup,
   Navbar,
   Nav,
+  NavDropdown,
   Fade,
   Form,
   FormControl,
@@ -21,7 +23,6 @@ import InputRange from 'react-input-range';
 import Modal from 'react-modal';
 import YouTube from '@u-wave/react-youtube';
 import 'react-input-range/lib/css/index.css';
-import { thisExpression } from '@babel/types';
 
 class App extends React.Component {
 
@@ -39,13 +40,13 @@ class App extends React.Component {
       sliderShown: false,
       isOpen: false,
       selectedMovieId: null,
-      // moviesGenresArray: [],
-      // moviesGenres: "",
+      genres: [],
     }
   }
 
   componentDidMount() {
     this.getLatestMoviesData();
+    this.getGenres();
     this.scrollListener = window.addEventListener("scroll", e => {
       this.handleScroll(e)
     })
@@ -143,18 +144,12 @@ class App extends React.Component {
   }
 
   sortByRating = () => {
-    const results = this.state.allMovies.filter(movie => {
-      if (movie.vote_average >= this.state.rating.min && movie.vote_average <= this.state.rating.max)
-        return movie
-    })
+    const results = this.state.allMovies.filter(movie => (movie.vote_average >= this.state.rating.min && movie.vote_average <= this.state.rating.max) && movie)
     this.setState({ movies: results })
   }
 
   sortByYear = () => {
-    const results = this.state.allMovies.filter(movie => {
-      if (parseInt(movie.release_date) >= this.state.year.min && parseInt(movie.release_date) <= this.state.year.max + 1)
-        return movie;
-    })
+    const results = this.state.allMovies.filter(movie => ((parseInt(movie.release_date) >= this.state.year.min && parseInt(movie.release_date) <= this.state.year.max + 1)) && movie)
     this.setState({ movies: results })
   }
 
@@ -167,18 +162,21 @@ class App extends React.Component {
     return (
       this.state.movies.map(({ title, overview, vote_average, backdrop_path, release_date, vote_count, id }) => {
         return (
-          <div className="col-12 col-md-6 col-lg-4" key={id}>
-            <Card style={{ marginBottom: 10 }}>
+          <div className="col-12 col-md-6 col-lg-4 d-flex justify-content-center" key={id}>
+            <Card className="render-card" style={{ marginBottom: 20, width: "32rem" }}>
               <Card.Img variant="top" src={this.modifyImgUrl(backdrop_path)} />
               <Card.Body>
                 <Card.Title className="over-flow" style={{ textAlign: "center", fontSize: 24, height: '3.5rem' }}>{title}</Card.Title>
                 <Card.Text style={{ textAlign: "center" }}>
                   <ListGroup variant="flush" style={{ color: "#040F16" }}>
-                    <ListGroup.Item className="over-flow" style={{ height: '15rem' }}>{overview}</ListGroup.Item>
+                    <ListGroup.Item className="over-flow" style={{ height: '8rem' }}>{overview}</ListGroup.Item>
                     <ListGroup.Item><b>Release Date:</b> {moment(release_date).format("MMM Do YY")}</ListGroup.Item>
                     <ListGroup.Item><b>Vote Count:</b> {vote_count}</ListGroup.Item>
-                    <ListGroup.Item><b>Rating:</b> <label className="btn-sm btn-warning py-0 px-2">{vote_average}</label></ListGroup.Item>
-                    <ListGroup.Item onClick={() => this.getTrailer(id)}><Button className="btn btn-trailer text-white">Watch Trailer</Button>
+                    <ListGroup.Item><b>Rating:</b> <label className="btn-sm py-0 px-2" style={{ backgroundColor: "#ffd500" }}>{vote_average}</label></ListGroup.Item>
+                    <ListGroup.Item onClick={() => this.getTrailer(id)}>
+                      <Button className="btn btn-trailer">
+                        Watch Trailer
+                      </Button>
                     </ListGroup.Item>
                   </ListGroup>
                 </Card.Text>
@@ -207,6 +205,41 @@ class App extends React.Component {
     }
   }
 
+  getGenres = async () => {
+    const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=58049738a0f581e94fda3c41ab528a79`
+
+    try {
+      let data = await fetch(url);
+      let response = await data.json();
+
+      this.setState({
+        genres: response.genres,
+      })
+
+    } catch (error) {
+      alert(error);
+    }
+  }
+
+  sortByGenres = id => {
+    const movies = this.state.allMovies.filter(movie => movie.genre_ids.includes(id))
+    this.setState({ movies })
+  }
+
+  renderNumberOfMoviesInAGenre = id => {
+    return this.state.allMovies.filter(movie => movie.genre_ids.includes(id)).length
+  }
+
+  renderNavGenres = () => {
+    return this.state.genres.map(genre => {
+      return (
+        <NavDropdown.Item onClick={() => this.sortByGenres(genre.id)}>
+          {genre.name} ({this.renderNumberOfMoviesInAGenre(genre.id)})
+        </NavDropdown.Item>
+      )
+    })
+  }
+
   renderNavFilterYear() {
     const { filterYearShown } = this.state
     return (
@@ -216,7 +249,7 @@ class App extends React.Component {
           aria-controls="year-fade"
           aria-expanded={filterYearShown}
         >
-          Filter By Years
+          Movies By Years
         </Nav.Link>
       </>
     )
@@ -245,7 +278,7 @@ class App extends React.Component {
           aria-controls="rating-fade"
           aria-expanded={filterRatingShown}
         >
-          Filter By Rating
+          Movies By Rating
         </Nav.Link>
       </>
     )
@@ -268,11 +301,11 @@ class App extends React.Component {
 
   renderNavBar() {
     return (
-      <Navbar collapseOnSelect expand="xl" fixed="top" style={{ backgroundColor: "#000022" }} >
-        <Navbar.Brand href="#">
+      <Navbar collapseOnSelect expand="xl" fixed="top" style={{ backgroundColor: "rgba(60, 60, 60, 0.8)" }}>
+        <Navbar.Brand href="/">
           <img
             alt="logo"
-            src="http://www.energycctv.com/uploads/4/7/0/1/47015565/1080p-fullhd-logo_3_orig.png"
+            src={logo}
             width="90"
             height="50"
             className="d-inline-block align-top"
@@ -280,21 +313,23 @@ class App extends React.Component {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" className="nav-toggle" />
         <Navbar.Collapse id="responsive-navbar-nav" style={{ textAlign: "center" }}>
-          <Nav>
-            <Nav.Link className="text-white" href="/">Home</Nav.Link>
-            <Nav.Link className="text-white" onClick={this.sortByVotes}>Highest Votes</Nav.Link>
-            <Nav.Link className="text-white" onClick={this.sortByAZ}>Movies A-Z</Nav.Link>
+          <Nav className="navbar-item">
+            <Nav.Link onClick={this.sortByVotes}>Highest Votes</Nav.Link>
+            <Nav.Link onClick={this.sortByAZ}>Movies A-Z</Nav.Link>
+            <NavDropdown title="Movies By Genres" id="collasible-nav-dropdown">
+              {this.renderNavGenres()}
+            </NavDropdown>
             {this.renderNavFilterYear()}
             {this.renderNavFilterRating()}
             <ul className="d-inline-flex list-unstyled mx-auto">
-              <li style={{ width: "15rem", margin: "1.5rem auto 0", padding:"0 1.5rem" }}>{this.renderFilterYearFade()}</li>
-              <li style={{ width: "15rem", margin: "1.5rem auto 0", padding:"0 1.5rem" }}>{this.renderFilterRatingFade()}</li>
+              <li className="my-3 my-xl-auto px-4 filter-fade">{this.renderFilterYearFade()}</li>
+              <li className="my-3 my-xl-auto px-4 filter-fade">{this.renderFilterRatingFade()}</li>
             </ul>
           </Nav>
 
           <Form inline onSubmit={this.handleSearchClick} className="d-flex justify-content-center ml-auto mt-4 mt-xl-0 mb-4 mb-xl-0">
-            <FormControl id="searchInput" type="text" placeholder="Your Movie" value={this.state.searchText} onChange={this.handleSearchChange} className="mr-sm-2" />
-            <Button className="btn btn-custom mt-sm-0 mt-2" style={{ marginRight: "1rem" }} onClick={this.handleSearchClick}>Search</Button>
+            <FormControl id="searchInput" type="text" placeholder="Your Movie" value={this.state.searchText} onChange={this.handleSearchChange} className="mr-sm-2 search-input"/>
+            <Button className="btn btn-warning btn-search mt-sm-0 mt-2" style={{ marginRight: "1rem" }} onClick={this.handleSearchClick}>Search</Button>
           </Form>
         </Navbar.Collapse>
       </Navbar>
@@ -330,13 +365,15 @@ class App extends React.Component {
       <div>
         {this.renderModal()}
         {this.renderNavBar()}
-        <Container style={{ marginTop: 90 }}>
-          <Row>
-            <Col xs={12} className="mt-4 mb-2">
-              <h1 className="text-center">Now Featuring</h1>
-            </Col>
-          </Row>
-          <ControlledCarousel movies={this.state.movies} />
+        <Container fluid>
+          <Container style={{ marginTop: 90 }}>
+            <Row>
+              <Col xs={12} className="mt-5 mb-0 p-0 now-featuring">
+                <h1 className="mb-0"><span>Now Featuring</span></h1>
+              </Col>
+              <ControlledCarousel movies={this.state.movies} />
+            </Row>
+          </Container>
           <Row>
             <Col xs={12} className="mt-4 mb-2">
               <h1 className="movie-selection"><span>Movie Selection</span></h1>
@@ -429,37 +466,35 @@ class ControlledCarousel extends React.Component {
     const { index, direction } = this.state;
 
     return (
-      <Row>
-        <Col xs={12}>
-          <Carousel
-            activeIndex={index}
-            direction={direction}
-            onSelect={this.handleSelect}
-          >
-            <Carousel.Item>
-              <YouTube
-                video={this.state.selectedFeaturedMovieId1}
-                height="550"
-                width="100%"
-              />
-            </Carousel.Item>
-            <Carousel.Item>
-              <YouTube
-                video={this.state.selectedFeaturedMovieId2}
-                height="550"
-                width="100%"
-              />
-            </Carousel.Item>
-            <Carousel.Item>
-              <YouTube
-                video={this.state.selectedFeaturedMovieId3}
-                height="550"
-                width="100%"
-              />
-            </Carousel.Item>
-          </Carousel>
-        </Col>
-      </Row>
+      <Col xs={12} className="px-4 mt-0" style={{ borderRight: "3px solid white", borderLeft: "3px solid white", borderBottom: "3px solid white", paddingBottom: "1.15rem" }}>
+        <Carousel
+          activeIndex={index}
+          direction={direction}
+          onSelect={this.handleSelect}
+        >
+          <Carousel.Item>
+            <YouTube
+              video={this.state.selectedFeaturedMovieId1}
+              height="550"
+              width="100%"
+            />
+          </Carousel.Item>
+          <Carousel.Item>
+            <YouTube
+              video={this.state.selectedFeaturedMovieId2}
+              height="550"
+              width="100%"
+            />
+          </Carousel.Item>
+          <Carousel.Item>
+            <YouTube
+              video={this.state.selectedFeaturedMovieId3}
+              height="550"
+              width="100%"
+            />
+          </Carousel.Item>
+        </Carousel>
+      </Col>
     );
   }
 }

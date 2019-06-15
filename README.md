@@ -8,7 +8,7 @@ One or two sentence summary of your project.
 
 Here's a walkthrough of implemented user stories.
 
-![Gif Walkthrough]("https://media.giphy.com/media/5PhRFCenPHKf9wXqxW/giphy.gif")
+![Gif Walkthrough](./src/movies-app-gif.gif)
 
 ## User Stories
 
@@ -25,11 +25,12 @@ The following **optional** features are implemented:
 * [x] The user can change the "source" from "Currently Playing" movies to "Top Rated" movies (or any other of the endpoints supplied by MovieDB).
 * [x] Sort by Rating and Popularity (from Lowest to Highest and Vice Versa).
 * [x] Have Year, Rating as a slider. Change the display dynamically when the slider is changed. You could use React Input Range package for this task.
-
+* [x] Infinite scrolling.
+* [x] Filter movies by genres.
 
 ## Time Spent and Lessons Learned
 
-Time spent: **12** hours spent in total.
+Time spent: **24** hours spent in total.
 
 Describe any challenges encountered while building the app.
 
