@@ -69,15 +69,47 @@
   background: #0094C6;
 }
 
-.btn-more {
+.btn-trailer {
   background: #0094C6;
   border: none;
   outline: none !important;
 }
 
-.btn-more:hover {
+.btn-trailer:hover {
   background: #F2A900;
 }
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 1000ms ease-in-out;
+  z-index: 16;
+}
+
+.ReactModal__Content {
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 50px;
+
+}
+
+.ReactModal__Overlay--after-open{
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close{
+  opacity: 0;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  height: 225px;
+  top: 150px;
+}
+
+/* .carousel-control-next-icon, 
+.carousel-control-prev-icon {
+  
+} */
 
 @keyframes App-logo-spin {
   from {
