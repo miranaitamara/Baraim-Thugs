@@ -20,7 +20,7 @@ body {
   outline: none !important;
 }
 
-.navbar-item * {
+.navbar-item *:not(div) {
   margin: auto 0;
 }
 
