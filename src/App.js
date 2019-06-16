@@ -15,9 +15,10 @@ import {
   Form,
   FormControl,
   Carousel,
-  Accordion,
+  Accordion
 }
   from 'react-bootstrap';
+import { UncontrolledCollapse } from 'reactstrap';
 import moment from 'moment';
 import { RingLoader } from 'react-spinners';
 import InputRange from 'react-input-range';
@@ -40,7 +41,7 @@ class App extends React.Component {
       year: { min: 1990, max: 2019 },
       rating: { min: 0, max: 10 },
       sliderShown: false,
-      isOpen: false,
+      modalIsOpen: false,
       selectedMovieId: null,
       genres: [],
     }
@@ -161,35 +162,39 @@ class App extends React.Component {
   }
 
   renderMovies() {
+    const { movies } = this.state
     return (
-      this.state.movies.map(({ title, overview, vote_average, backdrop_path, release_date, vote_count, id }, idx) => {
+      movies.map(({ title, overview, vote_average, backdrop_path, release_date, vote_count, id }) => {
         return (
           <div className="col-12 col-md-6 col-lg-4 d-flex justify-content-center" key={id}>
-            <Accordion className="render-card" style={{ marginBottom: 20, width: "30rem" }}>
-              <Card>
-                <Accordion.Toggle variant="link" eventKey={`"${idx}"`} style={{ backgroundColor: "white", border: "none", outline: "none" }}>
-                  <Card.Img variant="top" src={this.modifyImgUrl(backdrop_path)} />
-                  <Card.Title className="over-flow" style={{ textAlign: "center", fontSize: 24, height: '4rem' }}>
+            <Accordion>
+              <Card style={{ marginBottom: 20, width: "30rem" }}>
+                <Accordion.Toggle eventKey="0">
+                  <Card.Img variant="top" src={this.modifyImgUrl(backdrop_path)} id={`toggler-${id}`} />
+                  <Card.Title className="over-flow" style={{ textAlign: "center", fontSize: 24, height: '4rem' }} id={`toggler-${id}`} >
                     {title}
                   </Card.Title>
                 </Accordion.Toggle>
-                <Accordion.Collapse eventKey={`"${idx}"`}>
-                  <Card.Body style={{ paddingTop: 0 }}>
-                    <Card.Text style={{ textAlign: "center" }}>
-                      <ListGroup variant="flush" style={{ color: "#040F16" }}>
-                        <ListGroup.Item className="over-flow" style={{ height: '8rem' }}>{overview}</ListGroup.Item>
-                        <ListGroup.Item><b>Release Date:</b> {moment(release_date).format("MMM Do YY")}</ListGroup.Item>
-                        <ListGroup.Item><b>Vote Count:</b> {vote_count}</ListGroup.Item>
-                        <ListGroup.Item><b>Rating:</b> <label className="btn-sm py-0 px-2" style={{ backgroundColor: "#ffd500" }}>{vote_average}</label></ListGroup.Item>
-                        <ListGroup.Item onClick={() => this.getTrailer(id)}>
-                          <Button className="btn btn-trailer">
-                            Watch Trailer
-                      </Button>
-                        </ListGroup.Item>
-                      </ListGroup>
-                    </Card.Text>
-                  </Card.Body>
-                </Accordion.Collapse>
+                <UncontrolledCollapse toggler={`#toggler-${id}`}>
+                  <Accordion.Collapse eventKey="0">
+                    <Card.Body style={{ paddingTop: 0 }}>
+                      <Card.Text style={{ textAlign: "center" }}>
+                        <ListGroup variant="flush" style={{ color: "#040F16" }}>
+                          <ListGroup.Item className="over-flow" style={{ height: '8rem' }}>{overview}</ListGroup.Item>
+                          <ListGroup.Item><b>Release Date:</b> {moment(release_date).format("MMM Do YY")}</ListGroup.Item>
+                          <ListGroup.Item><b>Vote Count:</b> {vote_count}</ListGroup.Item>
+                          <ListGroup.Item><b>Rating:</b> <label className="btn-sm py-0 px-2" style={{ backgroundColor: "#ffd500" }}>{vote_average}</label></ListGroup.Item>
+                          <ListGroup.Item onClick={() => this.getTrailer(id)}>
+                            <Button className="btn btn-trailer">
+                              Watch Trailer
+                        </Button>
+                          </ListGroup.Item>
+                        </ListGroup>
+                      </Card.Text>
+                    </Card.Body>
+                  </Accordion.Collapse>
+
+                </UncontrolledCollapse>
               </Card>
             </Accordion>
           </div>
@@ -206,7 +211,7 @@ class App extends React.Component {
       let response = await data.json();
 
       this.setState({
-        isOpen: true,
+        modalIsOpen: true,
         selectedMovieId: response.results[0].key,
       })
 
@@ -349,8 +354,8 @@ class App extends React.Component {
   renderModal() {
     return (
       <Modal
-        isOpen={this.state.isOpen}
-        onRequestClose={() => this.setState({ isOpen: false })}
+        isOpen={this.state.modalIsOpen}
+        onRequestClose={() => this.setState({ modalIsOpen: false })}
       >
         <YouTube
           video={this.state.selectedMovieId}

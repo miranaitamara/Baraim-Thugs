@@ -191,7 +191,7 @@ body {
 
 .btn-trailer:hover,
 .btn-trailer:active {
-  background: rgba(60, 60, 60, 0.8);
+  background: rgba(60, 60, 60, 0.8) !important;
   box-shadow: 0 0 5px !important;
   outline: none !important;
 }
@@ -244,4 +244,10 @@ body {
 
 .scroll-up-container * {
   fill: #0b0c10;
+}
+
+.card button:not(.btn-trailer) {
+  border: none;
+  background: white;
+  outline: none;
 }

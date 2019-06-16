@@ -15,7 +15,8 @@
     "react-reactstrap-pagination": "^1.0.5",
     "react-scripts": "3.0.1",
     "react-scroll-up-button": "^1.6.4",
-    "react-spinners": "^0.5.4"
+    "react-spinners": "^0.5.4",
+    "reactstrap": "^8.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
