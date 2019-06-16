@@ -239,7 +239,6 @@ body {
 .scroll-up-container {
   outline: none;
   background-color: #ffd500 !important;
-  z-index: 10;
 }
 
 .scroll-up-container * {
@@ -250,4 +249,8 @@ body {
   border: none;
   background: white;
   outline: none;
+}
+
+[type=button] {
+  -webkit-appearance: none;
 }

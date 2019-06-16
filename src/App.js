@@ -166,17 +166,14 @@ class App extends React.Component {
     return (
       movies.map(({ title, overview, vote_average, backdrop_path, release_date, vote_count, id }) => {
         return (
-          <div className="col-12 col-md-6 col-lg-4 d-flex justify-content-center" key={id}>
-            <Accordion>
-              <Card style={{ marginBottom: 20, width: "30rem" }}>
-                <Accordion.Toggle eventKey="0">
-                  <Card.Img variant="top" src={this.modifyImgUrl(backdrop_path)} id={`toggler-${id}`} />
-                  <Card.Title className="over-flow" style={{ textAlign: "center", fontSize: 24, height: '4rem' }} id={`toggler-${id}`} >
+          <div className="col-12 col-md-6 col-lg-4 d-flex justify-content-center" style={{ width: "32rem" }} key={id}>
+            <Accordion style={{ width: "32rem" }} >
+              <Card style={{ marginBottom: 20 }}>
+                  <Card.Img variant="top" src={this.modifyImgUrl(backdrop_path)} id={`toggler-${id}`} type="button" />
+                  <Card.Title className="over-flow" style={{ textAlign: "center", fontSize: 24, height: '4rem' }} id={`toggler-${id}`} type="button">
                     {title}
                   </Card.Title>
-                </Accordion.Toggle>
                 <UncontrolledCollapse toggler={`#toggler-${id}`}>
-                  <Accordion.Collapse eventKey="0">
                     <Card.Body style={{ paddingTop: 0 }}>
                       <Card.Text style={{ textAlign: "center" }}>
                         <ListGroup variant="flush" style={{ color: "#040F16" }}>
@@ -192,8 +189,6 @@ class App extends React.Component {
                         </ListGroup>
                       </Card.Text>
                     </Card.Body>
-                  </Accordion.Collapse>
-
                 </UncontrolledCollapse>
               </Card>
             </Accordion>
