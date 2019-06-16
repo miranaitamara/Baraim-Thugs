@@ -161,7 +161,7 @@ body {
 
 .btn-search {
   background: #ffd500;
-  color: black !important;
+  color: #0b0c10 !important;
   border: none;
   outline: none !important;
 }
@@ -232,4 +232,14 @@ body {
 }
 .dropdown-menu > li {
   display: table-cell;
+}
+
+.scroll-up-container {
+  outline: none;
+  background-color: #ffd500 !important;
+  z-index: 10;
+}
+
+.scroll-up-container * {
+  fill: #0b0c10;
 }

@@ -23,6 +23,7 @@ import InputRange from 'react-input-range';
 import Modal from 'react-modal';
 import YouTube from '@u-wave/react-youtube';
 import 'react-input-range/lib/css/index.css';
+import ScrollUpButton from "react-scroll-up-button";
 
 class App extends React.Component {
 
@@ -328,7 +329,7 @@ class App extends React.Component {
           </Nav>
 
           <Form inline onSubmit={this.handleSearchClick} className="d-flex justify-content-center ml-auto mt-4 mt-xl-0 mb-4 mb-xl-0">
-            <FormControl id="searchInput" type="text" placeholder="Your Movie" value={this.state.searchText} onChange={this.handleSearchChange} className="mr-sm-2 search-input"/>
+            <FormControl id="searchInput" type="text" placeholder="Your Movie" value={this.state.searchText} onChange={this.handleSearchChange} className="mr-sm-2 search-input" />
             <Button className="btn btn-warning btn-search mt-sm-0 mt-2" style={{ marginRight: "1rem" }} onClick={this.handleSearchClick}>Search</Button>
           </Form>
         </Navbar.Collapse>
@@ -381,6 +382,11 @@ class App extends React.Component {
           </Row>
           <div className="d-flex justify-content-center movies-cards row">
             {this.renderMovies()}
+          </div>
+          <div>
+            <ScrollUpButton
+              ContainerClassName="scroll-up-container"
+            />
           </div>
         </Container>
       </div>
