@@ -10,6 +10,8 @@ body {
 
 .over-flow {
   overflow-y: scroll;
+  margin: 0;
+  padding-top: 0;
 }
 .over-flow::-webkit-scrollbar {
   display: none;

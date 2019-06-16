@@ -15,6 +15,7 @@ import {
   Form,
   FormControl,
   Carousel,
+  Accordion,
 }
   from 'react-bootstrap';
 import moment from 'moment';
@@ -161,28 +162,36 @@ class App extends React.Component {
 
   renderMovies() {
     return (
-      this.state.movies.map(({ title, overview, vote_average, backdrop_path, release_date, vote_count, id }) => {
+      this.state.movies.map(({ title, overview, vote_average, backdrop_path, release_date, vote_count, id }, idx) => {
         return (
           <div className="col-12 col-md-6 col-lg-4 d-flex justify-content-center" key={id}>
-            <Card className="render-card" style={{ marginBottom: 20, width: "32rem" }}>
-              <Card.Img variant="top" src={this.modifyImgUrl(backdrop_path)} />
-              <Card.Body>
-                <Card.Title className="over-flow" style={{ textAlign: "center", fontSize: 24, height: '3.5rem' }}>{title}</Card.Title>
-                <Card.Text style={{ textAlign: "center" }}>
-                  <ListGroup variant="flush" style={{ color: "#040F16" }}>
-                    <ListGroup.Item className="over-flow" style={{ height: '8rem' }}>{overview}</ListGroup.Item>
-                    <ListGroup.Item><b>Release Date:</b> {moment(release_date).format("MMM Do YY")}</ListGroup.Item>
-                    <ListGroup.Item><b>Vote Count:</b> {vote_count}</ListGroup.Item>
-                    <ListGroup.Item><b>Rating:</b> <label className="btn-sm py-0 px-2" style={{ backgroundColor: "#ffd500" }}>{vote_average}</label></ListGroup.Item>
-                    <ListGroup.Item onClick={() => this.getTrailer(id)}>
-                      <Button className="btn btn-trailer">
-                        Watch Trailer
+            <Accordion className="render-card" style={{ marginBottom: 20, width: "30rem" }}>
+              <Card>
+                <Accordion.Toggle variant="link" eventKey={`"${idx}"`} style={{ backgroundColor: "white", border: "none", outline: "none" }}>
+                  <Card.Img variant="top" src={this.modifyImgUrl(backdrop_path)} />
+                  <Card.Title className="over-flow" style={{ textAlign: "center", fontSize: 24, height: '4rem' }}>
+                    {title}
+                  </Card.Title>
+                </Accordion.Toggle>
+                <Accordion.Collapse eventKey={`"${idx}"`}>
+                  <Card.Body style={{ paddingTop: 0 }}>
+                    <Card.Text style={{ textAlign: "center" }}>
+                      <ListGroup variant="flush" style={{ color: "#040F16" }}>
+                        <ListGroup.Item className="over-flow" style={{ height: '8rem' }}>{overview}</ListGroup.Item>
+                        <ListGroup.Item><b>Release Date:</b> {moment(release_date).format("MMM Do YY")}</ListGroup.Item>
+                        <ListGroup.Item><b>Vote Count:</b> {vote_count}</ListGroup.Item>
+                        <ListGroup.Item><b>Rating:</b> <label className="btn-sm py-0 px-2" style={{ backgroundColor: "#ffd500" }}>{vote_average}</label></ListGroup.Item>
+                        <ListGroup.Item onClick={() => this.getTrailer(id)}>
+                          <Button className="btn btn-trailer">
+                            Watch Trailer
                       </Button>
-                    </ListGroup.Item>
-                  </ListGroup>
-                </Card.Text>
-              </Card.Body>
-            </Card>
+                        </ListGroup.Item>
+                      </ListGroup>
+                    </Card.Text>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
           </div>
         )
       })
