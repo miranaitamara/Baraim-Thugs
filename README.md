@@ -27,6 +27,7 @@ The following **optional** features are implemented:
 * [x] Have Year, Rating as a slider. Change the display dynamically when the slider is changed. You could use React Input Range package for this task.
 * [x] Infinite scrolling.
 * [x] Filter movies by genres.
+* [x] Scroll to top. 
 
 ## Time Spent and Lessons Learned
 
