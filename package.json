@@ -2,6 +2,7 @@
   "name": "movies-app",
   "version": "0.1.0",
   "private": true,
+  "author":"Ryma Nait Amara",
   "dependencies": {
     "@u-wave/react-youtube": "^0.6.0",
     "bootstrap": "^4.3.1",
